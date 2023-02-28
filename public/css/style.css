@@ -127,7 +127,7 @@ code {
 }
 
 .sidebar-nav {
-	margin-top: 20px;
+	margin-top: -20px;
 }
 
 .nav-title {
@@ -287,7 +287,7 @@ footer {
 }
 
 .sidebar-footer {
-	margin-top: 80px;
+	margin-top: 280px;
 	font-size: 0.75em;
 	font-weight: lighter;
 	font-family: "Roboto";

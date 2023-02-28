@@ -1,8 +1,9 @@
-<div class="sidebar-item sidebar-header">
+<div class="sidebar-item sidebar-header" style="text-align: center;">
+	<img src="../public/img/title.jpg" style="width:130px; height:130px; border-radius:50%;"/>
 	<div class='sidebar-brand'>
 		<a href="#">{{ site.title }}</a>
 	</div>
-	<p class="lead">{{ site.description }}</p>
+	<p class="lead" style="margin-top: 10px">{{ site.description }}</p>
 	{%- if social.github -%}
 		<a rel="me" href="https://github.com/{{ social.github | cgi_escape | escape }}" title="{{ social.github | escape }}">
 			<svg class="svg-icon grey">
@@ -45,8 +46,4 @@
 	    {% endfor %}
 	  </nav>
 	</ul>
-</div>
-
-<div class="sidebar-item sidebar-footer">
-	<p> <a href="https://github.com/KOFKOY">Github</a></p>
 </div>
