@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-02-28T17:09:52+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">轻薄的假象</title><subtitle>醉后不知天在水，满船清梦压星河</subtitle><entry><title type="html">HashMap源码分析</title><link href="http://localhost:4000/java%20map/2023/02/27/JavaMap.html" rel="alternate" type="text/html" title="HashMap源码分析" /><published>2023-02-27T18:20:23+08:00</published><updated>2023-02-27T18:20:23+08:00</updated><id>http://localhost:4000/java%20map/2023/02/27/JavaMap</id><content type="html" xml:base="http://localhost:4000/java%20map/2023/02/27/JavaMap.html"><![CDATA[<h1 id="hashmap源码分析">HashMap源码分析</h1>
+<blockquote>
+  <p>Hello!</p>
+</blockquote>
+
+<p>This is code</p>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">print</span> <span class="s1">'hello world'</span>
+</code></pre></div></div>]]></content><author><name></name></author><category term="Java Map" /><summary type="html"><![CDATA[HashMap源码分析 Hello!]]></summary></entry></feed>
