@@ -1,8 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-02-28T17:53:34+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">轻薄的假象</title><subtitle>醉后不知天在水，满船清梦压星河</subtitle><entry><title type="html">HashMap源码分析</title><link href="http://localhost:4000/java%20map/2023/02/27/JavaMap.html" rel="alternate" type="text/html" title="HashMap源码分析" /><published>2023-02-27T18:20:23+08:00</published><updated>2023-02-27T18:20:23+08:00</updated><id>http://localhost:4000/java%20map/2023/02/27/JavaMap</id><content type="html" xml:base="http://localhost:4000/java%20map/2023/02/27/JavaMap.html"><![CDATA[<h1 id="hashmap源码分析">HashMap源码分析</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-03-03T18:18:19+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">轻薄的假象</title><subtitle>醉后不知天在水，满船清梦压星河</subtitle><entry><title type="html">HashMap源码分析</title><link href="http://localhost:4000/javamap/2023/02/27/JavaMap.html" rel="alternate" type="text/html" title="HashMap源码分析" /><published>2023-02-27T18:20:23+08:00</published><updated>2023-02-27T18:20:23+08:00</updated><id>http://localhost:4000/javamap/2023/02/27/JavaMap</id><content type="html" xml:base="http://localhost:4000/javamap/2023/02/27/JavaMap.html"><![CDATA[<h1 id="hashmap源码分析">HashMap源码分析</h1>
+
+<h3 id="hashmap-uml类图">HashMap UML类图</h3>
+
 <blockquote>
-  <p>Hello!</p>
+  <p>UML 全拼 Unified Modeling Language 统一建模语言</p>
 </blockquote>
 
-<p>This is code</p>
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">print</span> <span class="s1">'hello world'</span>
-</code></pre></div></div>]]></content><author><name></name></author><category term="Java Map" /><summary type="html"><![CDATA[HashMap源码分析 Hello!]]></summary></entry></feed>
+<p><img src="/public/img/hashmap.png" alt="alt text" /></p>
+
+<ul>
+  <li>HashMap继承AbstractMap，AbstractMap实现了Map接口的抽象方法，没有实现默认方法</li>
+  <li>HashMap实现Cloneable接口,表明此类可以被克隆clone,常见于原型模式</li>
+  <li>HashMap实现Serializable接口，表明可以序列化</li>
+  <li>HashMap重写的AbstractMap中大部分方法，只有equals clone等方法没有重写</li>
+  <li>Map接口中涉及的BiConsumer接口。此类Consumer相关的接口属于功能接口，区别在于传参和返回值的不同</li>
+</ul>
+
+<blockquote>
+  <p>小知识点：在java中的«运算符，都是2的多少次幂，比如3«4 表示 2的4次幂 再乘 3
+用二进制的算法就是 把3转成二进制，左移4位，也就是在后面加4个零
+“»” 表示向右移动</p>
+</blockquote>
+
+<h3 id="源码分析">源码分析</h3>
+<h4 id="putval方法">putVal方法</h4>
+<ul>
+  <li>tab[i = (n-1) &amp; hash] 中括号内的部分是计算hash存在的位置，避免hash冲突，使元素均匀分布。 n是tab数组的长度，转换为二进制后，前面的都是0，与hash进行与操作最大值也就是n-1本身，所以不会越界</li>
+  <li>当put的key存在hash冲突时，新增的node会放到链表中，遍历node链表，把新node放到最后</li>
+  <li>当map的size大于临界值12时(数组+链表总大小)，会进行resize，容量扩容为原来的2倍，临界值也变为原来的2倍
+    <blockquote>
+      <p>当HashMap的容量不足时，将原来的数组扩容为两倍，并将原来的元素重新分配到新的数组中。
+具体的步骤如下：</p>
+      <ul>
+        <li>遍历原来的数组，对每个位置上的元素进行处理</li>
+        <li>如果该位置上只有一个节点，直接计算它在新数组中的位置，并放入新数组中</li>
+        <li>如果该位置上是一棵红黑树，将红黑树拆分为两棵子树，并分别放入新数组中</li>
+        <li>如果该位置上是一个链表，将链表拆分为两个子链表，并分别放入新数组中</li>
+        <li>拆分链表和红黑树的方法是利用了e.hash &amp; oldCap == 0这个条件，如果成立，则说明该节点在新数组中的位置不变；如果不成立，则说明该节点在新数组中的位置需要加上oldCap。这样可以避免重新计算hash值，并保持相对顺序不变。 (二进制计算，因为容量是16[二进制是10000]的倍数，e.hash &amp; oldCap == 0 时，扩容后 (e.hash &amp; (oldCap - 1)) 等于 (e.hash &amp; (newCap - 1))</li>
+      </ul>
+    </blockquote>
+  </li>
+</ul>]]></content><author><name></name></author><category term="JavaMap" /><summary type="html"><![CDATA[HashMap源码分析]]></summary></entry></feed>
