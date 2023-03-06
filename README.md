@@ -7,6 +7,10 @@ permalink: /about/
 
 > 博客使用框架Jekyll，部署在Github Page
 
+### 启动服务
+jekyll serve
+
+
 ### Features
 
 - Responsive.

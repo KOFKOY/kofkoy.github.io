@@ -1,4 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-03-03T18:18:19+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">轻薄的假象</title><subtitle>醉后不知天在水，满船清梦压星河</subtitle><entry><title type="html">HashMap源码分析</title><link href="http://localhost:4000/javamap/2023/02/27/JavaMap.html" rel="alternate" type="text/html" title="HashMap源码分析" /><published>2023-02-27T18:20:23+08:00</published><updated>2023-02-27T18:20:23+08:00</updated><id>http://localhost:4000/javamap/2023/02/27/JavaMap</id><content type="html" xml:base="http://localhost:4000/javamap/2023/02/27/JavaMap.html"><![CDATA[<h1 id="hashmap源码分析">HashMap源码分析</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-03-06T18:26:34+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">轻薄的假象</title><subtitle>醉后不知天在水，满船清梦压星河</subtitle><entry><title type="html">ServiceLoader</title><link href="http://localhost:4000/java/2023/03/06/JavaServiceLoad.html" rel="alternate" type="text/html" title="ServiceLoader" /><published>2023-03-06T16:00:00+08:00</published><updated>2023-03-06T16:00:00+08:00</updated><id>http://localhost:4000/java/2023/03/06/JavaServiceLoad</id><content type="html" xml:base="http://localhost:4000/java/2023/03/06/JavaServiceLoad.html"><![CDATA[<h1 id="serviceloader-加载服务提供者">ServiceLoader 加载服务提供者</h1>
+
+<blockquote>
+  <p>它是Java的SPI(Service Provider Interface)机制的一部分。 实现服务提供方 和 服务使用方解耦</p>
+</blockquote>
+
+<h3 id="实现原理">实现原理</h3>
+<p>在ServiceLoader.load时 懒加载，根据传入的接口类，遍历META-INF/services目录下的以该类命名的文件中的所有类，并实例化返回。</p>
+
+<h3 id="使用">使用</h3>
+<ul>
+  <li>定义一个接口。</li>
+  <li>在 META-INF/services 目录下创建一个以该接口命名的文件。 包名+文件名</li>
+  <li>在该文件中定义接口的实现类。</li>
+  <li>使用 ServiceLoader.load 方法来加载并实例化类。</li>
+</ul>]]></content><author><name></name></author><category term="Java" /><summary type="html"><![CDATA[ServiceLoader 加载服务提供者]]></summary></entry><entry><title type="html">HashMap源码分析</title><link href="http://localhost:4000/java/2023/02/27/JavaMap.html" rel="alternate" type="text/html" title="HashMap源码分析" /><published>2023-02-27T18:20:23+08:00</published><updated>2023-02-27T18:20:23+08:00</updated><id>http://localhost:4000/java/2023/02/27/JavaMap</id><content type="html" xml:base="http://localhost:4000/java/2023/02/27/JavaMap.html"><![CDATA[<h1 id="hashmap源码分析">HashMap源码分析</h1>
 
 <h3 id="hashmap-uml类图">HashMap UML类图</h3>
 
@@ -35,9 +50,34 @@
         <li>遍历原来的数组，对每个位置上的元素进行处理</li>
         <li>如果该位置上只有一个节点，直接计算它在新数组中的位置，并放入新数组中</li>
         <li>如果该位置上是一棵红黑树，将红黑树拆分为两棵子树，并分别放入新数组中</li>
-        <li>如果该位置上是一个链表，将链表拆分为两个子链表，并分别放入新数组中</li>
-        <li>拆分链表和红黑树的方法是利用了e.hash &amp; oldCap == 0这个条件，如果成立，则说明该节点在新数组中的位置不变；如果不成立，则说明该节点在新数组中的位置需要加上oldCap。这样可以避免重新计算hash值，并保持相对顺序不变。 (二进制计算，因为容量是16[二进制是10000]的倍数，e.hash &amp; oldCap == 0 时，扩容后 (e.hash &amp; (oldCap - 1)) 等于 (e.hash &amp; (newCap - 1))</li>
+        <li>如果该位置上是一个链表，将链表拆分为两个子链表，并分别放入新数组中。两个子链表，一个lo链表，一个hi链表，根据e.hash &amp; oldCap=0的条件，lo存放下标不变的链表，hi存放（下标 + oldCap）的链表</li>
       </ul>
     </blockquote>
   </li>
-</ul>]]></content><author><name></name></author><category term="JavaMap" /><summary type="html"><![CDATA[HashMap源码分析]]></summary></entry></feed>
+</ul>
+
+<p>拆分链表和红黑树条件解析 e.hash &amp; oldCap == 0：</p>
+<ul>
+  <li>oldCap一定是2的整数次幂, 这里假设是2^m</li>
+  <li>newCap是oldCap的两倍, 则会是2^(m+1)</li>
+  <li>hash对数组大小取模(n - 1) &amp; hash 其实就是取hash的低m位
+我们假设 oldCap = 16, 即 2^4,
+16 - 1 = 15, 二进制表示为 0000 0000 0000 0000 0000 0000 0000 1111
+可见除了低4位, 其他位置都是0（简洁起见，高位的0后面就不写了）, 则 (16-1) &amp; hash 自然就是取hash值的低4位,我们假设它为 abcd.</li>
+</ul>
+
+<p>以此类推, 当我们将oldCap扩大两倍后, 新的index的位置就变成了 (32-1) &amp; hash, 其实就是取 hash值的低5位. 那么对于同一个Node, 低5位的值无外乎下面两种情况:</p>
+<blockquote>
+  <p>0abcd
+1abcd
+其中, 0abcd与原来的index值一致, 而1abcd = 0abcd + 10000 = 0abcd + oldCap</p>
+</blockquote>
+
+<p>故虽然数组大小扩大了一倍，但是同一个key在新旧table中对应的index却存在一定联系： 要么一致，要么相差一个 oldCap。</p>
+
+<p>总结：</p>
+<ul>
+  <li>resize发生在table初始化, 或者table中的节点数超过threshold值的时候, threshold的值一般为负载因子乘以容量大小.</li>
+  <li>每次扩容都会新建一个table, 新建的table的大小为原大小的2倍.</li>
+  <li>扩容时,会将原table中的节点re-hash到新的table中, 但节点在新旧table中的位置存在一定联系: 要么下标相同, 要么相差一个oldCap(原table的大小).</li>
+</ul>]]></content><author><name></name></author><category term="Java" /><summary type="html"><![CDATA[HashMap源码分析]]></summary></entry></feed>
